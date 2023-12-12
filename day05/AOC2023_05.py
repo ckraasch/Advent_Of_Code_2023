@@ -50,45 +50,44 @@ def go_through_map(prev_val, new_list, n):
             next_val = prev_val + diff
     return next_val
 
-def find_locations(seed_list, new_list):
-    list_per_seed = []
-    for seed in seed_list:
-        next_val = seed
-        for n in range(1, len(new_list)):
-            next_val = go_through_map(next_val, new_list, n)
-        list_per_seed.append(next_val)
-    return list_per_seed
+def find_locations(seed, new_list):
+    next_val = seed
+    for n in range(1, len(new_list)):
+        next_val = go_through_map(next_val, new_list, n)
+    return next_val
 
 def day05_1(f_content):
-    answer = 0
+    answer = None
     giant_list = []
     [giant_list.append(row.split()) for row in f_content]
     old_list = make_sublists(giant_list)
     new_list = remove_everything_but_numbers(old_list)
     seed_list = new_list[0][0]
-    answer = min(find_locations(seed_list, new_list))
+    for seed in seed_list:
+        if answer == None:
+            answer = find_locations(seed, new_list)
+        else:
+            answer = min(answer, find_locations(seed, new_list))
     return answer
 
 # part 2
-def expand_seed_list(old_seed_list):
-    new_seed_list = []
-    for first_seed, seeds_len in zip(old_seed_list[::2], old_seed_list[1::2]):
-        last_seed = first_seed+seeds_len
-        [new_seed_list.append(i) for i in range(first_seed, last_seed)]
-    return new_seed_list
-
-def day05_2(f_content): # takes too long, not sure if it works
-    answer = 0
+def day05_2(f_content):
+    answer = None
     giant_list = []
     [giant_list.append(row.split()) for row in f_content]
     old_list = make_sublists(giant_list)
     new_list = remove_everything_but_numbers(old_list)
-    old_seed_list = new_list[0][0]
-    expanded_seed_list = expand_seed_list(old_seed_list)
-    answer = min(find_locations(expanded_seed_list, new_list))
+    seed_list = new_list[0][0]
+    for first_seed, seeds_len in zip(seed_list[::2], seed_list[1::2]):
+        last_seed = first_seed+seeds_len
+        for i in range(first_seed, last_seed):
+            if answer == None:
+                answer = find_locations(i, new_list)
+            else:
+                answer = min(answer, find_locations(i, new_list))
     return answer
 
 print("test, part 1:", day05_1(file_content(0)))
 print("real, part 1:", day05_1(file_content(1)))
 print("test, part 2:", day05_2(file_content(0)))
-print("real, part 2:", day05_2(file_content(1)))
+# print("real, part 2:", day05_2(file_content(1))) # takes too long, not sure if it works
