@@ -1,5 +1,4 @@
 # import packages
-import os
 import re
 
 # general functions
