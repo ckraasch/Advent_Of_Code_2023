@@ -1,5 +1,4 @@
 # import packages
-import os
 import numpy as np
 
 # general functions
